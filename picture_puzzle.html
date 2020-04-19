@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>拼图游戏</title>
+</head>
+<style>
+    #source{
+        width: 192px;
+        height: 108px;
+    }
+</style>
+<body>
+    <div id="title">
+        <h2>拼图游戏</h2>
+    </div>
+    <div id="slider">
+        <form action="">
+            <label for="">容易</label>
+            <input type="range" id="scale" value="4" min="3" max="5" step="1">
+            <label for="">难</label>
+            <img id="source" src="images/4.jpg" alt="">
+        </form>
+        <br>
+    </div>
+    <div id="main" class="main">
+        <canvas id="puzzle" width="768px" height="768px"></canvas>
+    </div>
+    <script src="js/sliding.js"></script>
+</body>
+</html>

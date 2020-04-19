@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>翻牌游戏</title>
+    <link rel="stylesheet" href="css/poker_cards.css">
+</head>
+<body>    
+    <section id="game">
+        <div id="cards">
+            <div class="card">
+                <div class="face front"></div>
+                <div class="face back"></div>
+            </div>
+        </div>
+    </section>
+    <div style="text-align: center;margin:50px 0;font:normal 44px/56px">
+        <p>扑克牌翻牌</p>
+        <div id="timer"></div>
+    </div>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/poker_cards.js"></script>   
+    <script>
+        var success = false;
+        //随机洗牌
+        
+        matchingGame.deck.sort(shuffle);
+        var card = $(".card");
+        for(var i =0;i<23;i++){
+            card.clone().appendTo($("#cards"));
+        }
+        //对每张牌进行设置
+        $(".card").each(function(index){
+            //调整坐标
+            $(this).css({
+                "left":(matchingGame.cardWidth+20)*(index%8)+"px",
+                "top":(matchingGame.cardHeight+20)*Math.floor(index/8)+"px"
+            });
+            //从数组deck取一个牌如"cardAK","cardBJ"
+            var pattern = matchingGame.deck.pop();
+            //data()方法向被选元素附加数据，这里"pattern"存储牌类别数据如"cardAK","cardBJ"
+            $(this).data("pattern",pattern);
+            //把其翻牌后的对应牌面附加上去
+            $(this).find(".back").addClass(pattern);//添加类别就可以显示对应的牌面
+            $(this).click(selectCard);//指定单击牌事件的功能函数selectCard
+        });
+        var d1 = new Date();//年月日时分秒
+        var d2 = d1.getTime()+2*60*1000;
+        var endDate = new Date(d2);
+        function daoJiShi(){
+            var now = new Date();
+            var oft = Math.round((endDate - now)/1000);
+            var ofd = parseInt(oft/3600/24);
+            var ofh = parseInt((oft%(3600*24))/3600);
+            var ofm = parseInt((oft%3600)/60);
+            var ofs = oft%60;
+            document.getElementById("timer").innerHTML = "还有" + ofm + "分钟" + ofs + "秒";
+            if(success == true) return;
+            if(ofs<0){
+                document.getElementById("timer").innerHTML = "倒计时结束！";
+                if(success == false){
+                    alert("你挑战失败了！");
+                }
+                return;
+            };
+            setTimeout("daoJiShi()",1000);
+        };
+        daoJiShi();
+        function selectCard(){
+            var fcard = $(".card-flipped");
+            //翻了两张牌后退出翻牌
+            if(fcard.length>1){
+                return;
+            }
+            $(this).addClass("card-flipped");
+            //翻了两张牌后检测是否一致
+            var fcards = $(".card-flipped");
+            if(fcards.length==2){
+                setTimeout(function(){
+                    checkPattern(fcards);
+                },700)
+            }
+        }
+        //检测两张牌是否一致函数
+        function checkPattern(cards){
+            var pattern1 = $(cards[0]).data("pattern");
+            var pattern2 = $(cards[1]).data("pattern");
+            $(cards).removeClass("card-flipped");
+            if(pattern1 == pattern2){
+                $(cards).addClass("card-removed");
+                var fcards = $(".card-removed");
+                if(fcards.length == 24){
+                    alert("恭喜你成功了!");
+                    success = true;
+                }
+            }
+        }
+    </script>
+</body>
+</html>
