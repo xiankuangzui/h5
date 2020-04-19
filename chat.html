@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .chat{
+            margin:0 auto;
+            box-sizing: border-box;
+            width:500px;
+            background:#F6F6F6;
+            border-radius: 10px;
+            max-height: 500px;
+        }
+        .input{
+            width: 500px;
+            height: 150px;
+            margin:10px auto;
+            box-sizing: border-box;
+        }
+        .in{
+            box-sizing: border-box;
+            width:100%;
+            height:80%;
+            border-radius: 10px;
+            outline:none;
+            resize:none;
+        }
+        .btn{
+            width:60px;
+            height: 30px;
+            border-radius: 10px;
+            text-decoration: none;
+            outline: none;
+            float:right;
+            margin-right:20px;
+        }
+        .chatBox{
+            width:250px;
+            min-height:50px;
+            margin: 10px 10px 0 210px;
+            display:flex;
+            justify-content: flex-end;
+            align-items: center;
+            flex-wrap: wrap;
+            background:#9EEA6A;
+            border-radius: 10px;
+            padding:10px;
+        }    
+        .chatBox:hover{
+            background:#98E165;
+        }
+        .chatCon{
+            width:80%;
+            /* p标签的文字换行 */
+            word-wrap:break-word;
+        }
+        .cancel{
+            width:20%;
+            outline: none;
+            border-radius: 10px;
+        }
+        .chatBox_ai{
+            width:250px;
+            min-height:50px;
+            margin-top:10px;
+            margin-bottom:10px;
+            display:flex;
+            justify-content: flex-end;
+            align-items: center;
+            flex-wrap: wrap;
+            background:#fff;
+            border-radius: 10px;
+            padding:10px;
+        }
+        .chatBox_ai:hover{
+            background:#F6F6F6;
+        }
+        .chatCon_ai{
+            width:80%;
+            word-wrap:break-word;
+        }
+        .cancel_ai{
+            width:20%;
+            outline: none;
+            border-radius: 10px;
+        }
+        .cancel_inf{
+            width:250px;
+            border-radius: 10px;
+            background:#DADADA;
+            color:white;
+            text-align: center;
+            margin:10px auto;
+            
+        }
+    </style>
+</head>
+
+<body>
+    <div class="chat" id="chat"></div>
+    <div class="input" id="input">
+        <textarea name="" class="in" id="in" cols="30" rows="10"></textarea>
+        <button class="btn" id="btn">发送</button>
+    </div>
+</body>
+<script>
+    //获取id的简便方法。 $("id") 相当于 document.getElementById("id") 
+    function $(id){
+        return document.getElementById(id);
+    }
+    $("btn").onclick = function(){
+        if($("in").value != ""){
+            //发送
+            var div = document.createElement("div");//创建一个div，设置一个变量存储
+            var p = document.createElement("p");//创建一个p，设置一个变量存储
+            p.innerHTML = $("in").value;//p的内容变成输入框的内容
+            $("in").value = "";//将输入框清空
+            div.className = "chatBox";//设置div的样式
+            p.className = "chatCon";//设置p的样式
+            div.appendChild(p);//在div里面加入p
+            $("chat").appendChild(div);//在chat框里加入div
+            $("chat").style.padding = "10px";//将chat的padding样式设置为10px
+            
+            //自动回复
+            var str = p.innerHTML;//获取p的内容并存入str，得到的变量类型为字符串
+            var arr = str.split("");//将字符串分割并存入数组arr
+            for(i = 0;i<arr.length;i++){//遍历数组
+                if(arr[i] + arr[i+1] == "请问"){//判断，如果有连续两个字为“请”“问”，调用auto方法
+                    auto("您好，请问有什么需要帮您？")
+                }
+            }
+
+            //撤回
+            var button = document.createElement("button");
+            button.innerHTML = "撤回";
+            button.className = "cancel";
+            div.appendChild(button);
+            button.onclick = function(){
+                div.remove();//移除div
+                let box = document.createElement("div");//let和var 的区别，请查文档
+                box.innerHTML = "您撤回了一条消息";
+                box.className = "cancel_inf";
+                $("chat").appendChild(box)
+                if(!$("chat").innerHTML){//判断，如果chat里面没有内容，将chat的padding样式设置为0px
+                    $("chat").style.padding = "0px";
+                }
+            }            
+        }
+    }
+    function auto(word){
+        let div = document.createElement("div");
+        let p = document.createElement("p");
+        p.innerHTML = word;
+        div.className = "chatBox_ai";
+        div.id = "chatBox_ai";
+        p.className = "chatCon_ai";
+        div.appendChild(p);
+        $("chat").appendChild(div);
+
+
+        $("chatBox_ai").ondblclick = function(){//双击
+            let button = document.createElement("button");
+            button.innerHTML = "删除";
+            button.className = "cancel_ai";
+            div.appendChild(button);
+            button.onclick = function(){
+                div.remove();
+                let box = document.createElement("div");
+                box.innerHTML = "您删除了一条消息";
+                box.className = "cancel_inf";
+                $("chat").appendChild(box)
+                if(!$("chat").innerHTML){
+                    $("chat").style.padding = "0px";
+                }
+            }
+        }
+        
+    }
+</script>
+</html>

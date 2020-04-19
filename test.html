@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <p id="my"></p>
+    <p id="en"></p>
+    <button id="attack">攻击</button>
+    <script>
+        var my = {
+            blood:100,
+            attack:10,
+            type:"person",
+            defense:"person"
+        };
+        var en = {
+            blood:100,
+            attack:10,
+            type:"person",
+            defense:"person"
+        };
+        function $(id){
+            return document.getElementById(id)
+        };
+        var start = false;
+        $("attack").onclick = function(){
+            start = true;
+            
+        }
+        setInterval(function(){
+            if(start == true){
+                console.log(1)
+            }
+        },1000)
+    </script>
+</body>
+</html>

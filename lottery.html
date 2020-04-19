@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button id="show">显示</button>
+    <button id="name">名称</button>
+    <button id="blood">生命</button>
+    <button id="speed">速度</button>
+    <p id="text"></p>
+</body>
+<script>
+    function $(id){
+        return document.getElementById(id)
+    }    
+    var obj = {
+        name:"mcv",
+        blood:5000,
+        speed:10
+    }
+    $("show").onclick = function(){
+        var a;
+        
+        $("text").innerHTML = add(a)
+    }
+    $("name").onclick = function(){
+        var name = "name"
+        ob(name)
+    } 
+    $("blood").onclick = function(){
+        var blood = "blood"
+        ob(blood)
+    }
+    $("speed").onclick = function(){
+        var speed = "speed"
+        ob(speed)
+    }
+    function add(a){
+        a = 1;
+        return a
+    }
+    function ob(id){        
+        var val = obj[`${id}`];
+        console.log(val)
+        console.log(obj.name)
+        $("text").innerHTML = val;
+    }
+</script>
+</html>

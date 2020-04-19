@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>canvas雨滴效果</title>
+    <style>
+        body{
+            margin:0;
+        }
+        canvas{/*装饰元素的属性*/
+            display:block;
+            background-color:black;
+        }
+    </style>
+</head>
+<body>
+    <canvas class="rain"></canvas>
+    <script>
+        /*设计思路
+            1.让canvas元素和浏览器窗口宽高一致
+               1.获取canvas元素
+               2.获取浏览器窗口宽高，存起来
+               3.给canvas设置宽高
+               4.当浏览器窗口宽高发生改变的时候需要重新设置canvas的宽高
+            2.使用canvas绘制图形
+               1.获取canvas元素上的可绘制区域
+               2.拿起一只笔并蘸上墨水(canvas.fillStyle = "color")
+                 1.fill画实心
+                 2.stroke画空心
+               3.下笔画
+            3.如何绘制会动的图形
+               1.动画：1s播放多张静态图片实现动画效果
+                 帧
+                 1s内画60帧以上
+                 定时器：
+            4.绘制会动的雨滴
+            5.绘制雨滴
+        */
+        //获取canvas元素
+        var canvas = document.querySelector(".rain");
+        var w,h;
+        (function setSize(){
+            window.onresize = arguments.callee;
+            //获取浏览器宽高
+            w = window.innerWidth;
+            h = window.innerHeight;
+            //给canvas设置宽高，这样是设置属性object，canvas.style.width是设置样式
+            canvas.width = w;
+            canvas.height = h;
+        })()//自执行函数
+        //获取canvas画图部分
+        var canCon = canvas.getContext("2d");
+        var aRain = [];
+        // setInterval(function(){
+        //     canCon.beginPath();
+        //     //加一层蒙版
+        //     canCon.fillStyle="rgba(0,0,0,0.05)";
+        //     canCon.fillRect(0,0,w,h);
+        //     //画
+        //     canCon.fillStyle = "red";
+        //     canCon.fillRect(100,y++,4,10);
+        // },1000/60)//每隔t ms就执行一次function
+        function random(min,max){//返回从最小值到最大值之间的数
+            return Math.random()*(max-min)+min;
+        }
+        function Rain(){//构造函数
+
+        }
+        
+        Rain.prototype = {
+            init:function(){
+                this.x = random(0,w);//从0到w 新生成的雨滴横坐标
+                this.y = 0;
+                this.vY = random(4,5);//雨滴每秒钟下降的速度 
+                this.h = random(0.8*h,0.9*h)//雨滴落点
+                this.r = 1;//雨滴绽放的初始半径
+                this.vr = 1;//雨滴半径扩大
+            },
+            draw:function(){
+                if(this.y<this.h){
+                    canCon.beginPath();
+                    canCon.fillStyle = "#31f7f7";
+                    canCon.fillRect(this.x,this.y,2,10);
+                }else{
+                    canCon.beginPath();
+                    canCon.strokeStyle = "#31f7f7";
+                    canCon.arc(this.x,this.y,this.r,0,Math.PI*2);
+                    canCon.stroke();
+                }
+                
+            },
+            move:function(){
+                if(this.y<this.h){
+                    this.y += this.vY;//雨滴每秒钟下降4~5
+                }else{
+                    if(this.r < 50){
+                        this.r += this.vr;
+                    }else{
+                        this.init();
+                    }                   
+                }
+                
+                this.draw();//把移动的雨滴调用出来
+            }
+        }
+        
+        function createRain(num){
+            for(var i=0;i<num;i++){
+                setTimeout(function(){
+                    var rain = new Rain();//创建新的雨滴
+                    rain.init();
+                    rain.draw();
+                    aRain.push(rain);//将生成的雨滴存入数组
+                },200*i)                
+            }
+        }
+        createRain(66);
+        //雨滴运动
+        setInterval(function(){
+            //透明尾巴
+            canCon.fillStyle = "rgba(0,0,0,0.05)";
+            canCon.fillRect(0,0,w,h);
+            for(var item of aRain){
+                //for of:item变量指数组里面的每一个元素
+                //for in:item变量指数组里面的每一个元素的下标
+                item.move();
+            }
+        },1000/60)
+    </script>
+</body>
+</html>
